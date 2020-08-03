@@ -8,12 +8,8 @@ function! devpanel#DevPanelActivateMarkedWindow()
 		execute window . 'wincmd w'
 		if exists('w:devpanel_marked_window')
 			unlet w:devpanel_marked_window
-			if g:have_tagbar
-				call tagbar#Update()
-			endif
-			if g:have_lightline
-				call lightline#update()
-			endif
+			call tagbar#Update()
+			call lightline#update()
 			return
 		endif
 	endfor
@@ -31,22 +27,18 @@ function! devpanel#DevPanelOpen()
 		let t:dev_panel_open = 1
 		call devpanel#DevPanelMarkWindow()
 		call devpanel#DevPanelSizeUpdate()
-		if g:have_nerdtree
-			if $GIT_ROOT != ""
-				silent NERDTree ${GIT_ROOT}/vobs/projects/springboard/fabos/
-				silent NERDTreeFind
-			else
-				silent NERDTree %
-			endif
+		if $GIT_ROOT != ""
+			silent NERDTree ${GIT_ROOT}/vobs/projects/springboard/fabos/
+			silent NERDTreeFind
+		else
+			silent NERDTree %
 		endif
-		if g:have_tagbar
-			silent TagbarOpen
-		endif
+		silent TagbarOpen
 		"echom 'Activating marked window...'
 		call devpanel#DevPanelActivateMarkedWindow()
 
 		" If we have flake8, and if this is a python file, run flake8
-		if g:have_flake8 && &filetype ==# 'python'
+		if &filetype ==# 'python'
 			call devpanel#DevPanelMarkWindow()
 			call flake8#Flake8()
 			let w:flake8_window = 1
@@ -65,12 +57,8 @@ function! devpanel#DevPanelClose()
 	if (t:dev_panel_open == 1)
 		set nonumber
 		let t:dev_panel_open = 0
-		if g:have_nerdtree
-			silent NERDTreeClose
-		endif
-		if g:have_tagbar
-			silent TagbarClose
-		endif
+		silent NERDTreeClose
+		silent TagbarClose
 	endif
 endfunction
 
@@ -86,14 +74,7 @@ function! devpanel#DevPanelToggle()
 endfunction
 
 function! devpanel#DevPanelSizeUpdate()
-	if g:have_nerdtree
-		if g:have_tagbar
-			"let g:tagbar_vertical = winheight(0) / 2
-			let g:tagbar_height = winheight(0) / 2
-		endif
-		let g:NERDTreeWinSize = winwidth(0) > 150 ? 50 : winwidth(0) / 3
-	endif
+	let g:tagbar_height = winheight(0) / 2
+	let g:NERDTreeWinSize = winwidth(0) > 150 ? 50 : winwidth(0) / 3
 	redraw!
 endfunction
-
-autocmd BufReadPost *.c,*.cpp,*.h redraw!
