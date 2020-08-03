@@ -1,5 +1,14 @@
+" =============================================================================
+" file:			devpanel.vim
+" description:	manage an ide based window environment with other plugins
+" author:		david hegland <darth.gerbil@gmail.com>
+" license:		vim license
+" website:		https://github.com/raven42/devpanel-vim
+" version:		1.0
+" note:			this plugin uses nerdtree and tagbar
+" =============================================================================
 
-function! devpanel#DevPanelMarkWindow()
+function! devpanel#DevPanelMarkWindow() abort
 	let w:devpanel_marked_window = 1
 endfunction
 
@@ -15,7 +24,7 @@ function! devpanel#DevPanelActivateMarkedWindow()
 	endfor
 endfunction
 
-function! devpanel#DevPanelOpen()
+function! devpanel#DevPanelOpen() abort
 	if winwidth(0) < 100
 		return
 	endif
@@ -50,7 +59,7 @@ function! devpanel#DevPanelOpen()
 	endif
 endfunction
 
-function! devpanel#DevPanelClose()
+function! devpanel#DevPanelClose() abort
 	if (!exists('t:dev_panel_open'))
 		let t:dev_panel_open = 0
 	endif
@@ -62,7 +71,7 @@ function! devpanel#DevPanelClose()
 	endif
 endfunction
 
-function! devpanel#DevPanelToggle()
+function! devpanel#DevPanelToggle() abort
 	if (!exists('t:dev_panel_open'))
 		let t:dev_panel_open = 0
 	endif
@@ -73,8 +82,10 @@ function! devpanel#DevPanelToggle()
 	endif
 endfunction
 
-function! devpanel#DevPanelSizeUpdate()
+function! devpanel#DevPanelSizeUpdate() abort
 	let g:tagbar_height = winheight(0) / 2
 	let g:NERDTreeWinSize = winwidth(0) > 150 ? 50 : winwidth(0) / 3
 	redraw!
 endfunction
+
+let g:loaded_devpanel = 1
