@@ -1,11 +1,11 @@
 " =============================================================================
-" file:			devpanel.vim
-" description:	manage an ide based window environment with other plugins
-" author:		david hegland <darth.gerbil@gmail.com>
-" license:		vim license
-" website:		https://github.com/raven42/devpanel-vim
-" version:		1.0
-" note:			this plugin uses nerdtree and tagbar
+" File:			devpanel.vim
+" Description:	manage an ide based window environment with other plugins
+" Author:		David Hegland <darth.gerbil@gmail.com>
+" License:		vim license
+" Website:		https://github.com/raven42/devpanel-vim
+" Version:		1.0
+" Note:			this plugin uses NERDTree and Tagbar
 " =============================================================================
 
 if exists('g:loaded_devpanel')

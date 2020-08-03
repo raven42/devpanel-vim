@@ -56,6 +56,7 @@ function! devpanel#DevPanelOpen() abort
 
 		" Open terminal window
 		" terminal ++rows=15
+		redraw!
 	endif
 endfunction
 
