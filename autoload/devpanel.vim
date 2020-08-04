@@ -8,85 +8,132 @@
 " note:			this plugin uses nerdtree and tagbar
 " =============================================================================
 
+" devpanel#DevPanelMarkWindow() {{{1
 function! devpanel#DevPanelMarkWindow() abort
 	let w:devpanel_marked_window = 1
 endfunction
 
-function! devpanel#DevPanelActivateMarkedWindow()
-	for window in range(1, winnr('#'))
-		execute window . 'wincmd w'
-		if exists('w:devpanel_marked_window')
-			unlet w:devpanel_marked_window
-			call tagbar#Update()
-			call lightline#update()
-			return
-		endif
-	endfor
+" devpanel#DevPanelActivateMarkedWindow() {{{1
+function! devpanel#DevPanelActivateMarkedWindow(...)
+	if a:0 == 1
+		let clear_flag = a:1
+	else
+		let clear_flag = 1
+	endif
+	if !exists('w:devpanel_marked_window')
+		for window in range(1, winnr('#'))
+			if exists('w:devpanel_terminal')
+				call feedkeys("\<C-\><C-N>")
+			endif
+			execute window . 'wincmd w'
+			if exists('w:devpanel_marked_window')
+				if s:config.use_tagbar
+					call tagbar#Update()
+				endif
+				if s:config.use_lightline
+					call lightline#update()
+				endif
+				break
+			endif
+		endfor
+	endif
+	if clear_flag && exists('w:devpanel_marked_window')
+		unlet w:devpanel_marked_window
+	endif
 endfunction
 
+" devpanel#DevPanelOpen() {{{1
 function! devpanel#DevPanelOpen() abort
 	if winwidth(0) < 100
 		return
 	endif
-	if (!exists('t:dev_panel_open'))
-		let t:dev_panel_open = 0
+	if (!exists('t:devpanel_state'))
+		let t:devpanel_state = 0
 	endif
-	if (t:dev_panel_open == 0)
-		set number
-		let t:dev_panel_open = 1
+	if (t:devpanel_state == 0)
+		let t:devpanel_state = 1
+		if s:config.show_line_num
+			set number
+		endif
 		call devpanel#DevPanelMarkWindow()
 		call devpanel#DevPanelSizeUpdate()
-		if $GIT_ROOT != ""
-			silent NERDTree ${GIT_ROOT}/vobs/projects/springboard/fabos/
-			silent NERDTreeFind
-		else
-			silent NERDTree %
+		if s:config.use_nerdtree
+			if $GIT_ROOT != ""
+				silent NERDTree ${GIT_ROOT}/vobs/projects/springboard/fabos/
+				silent NERDTreeFind
+			else
+				silent NERDTree %
+			endif
 		endif
-		silent TagbarOpen
-		"echom 'Activating marked window...'
-		call devpanel#DevPanelActivateMarkedWindow()
+		if s:config.use_tagbar
+			silent TagbarOpen
+		endif
+		call devpanel#DevPanelActivateMarkedWindow(0)
 
 		" If we have flake8, and if this is a python file, run flake8
 		if &filetype ==# 'python'
-			call devpanel#DevPanelMarkWindow()
 			call flake8#Flake8()
 			let w:flake8_window = 1
-			call devpanel#DevPanelActivateMarkedWindow()
 		endif
 
-		" Open terminal window
-		" terminal ++rows=15
+		if s:config.use_terminal
+			" Open terminal window
+			let cmd = 'terminal ++rows=' . s:config.terminal_size
+			echom 'running cmd=' . cmd
+			execute cmd
+		endif
+		call devpanel#DevPanelActivateMarkedWindow()
 		redraw!
 	endif
 endfunction
 
+" devpanel#DevPanelClose() {{{1
 function! devpanel#DevPanelClose() abort
-	if (!exists('t:dev_panel_open'))
-		let t:dev_panel_open = 0
+	if (!exists('t:devpanel_state'))
+		let t:devpanel_state = 0
 	endif
-	if (t:dev_panel_open == 1)
-		set nonumber
-		let t:dev_panel_open = 0
-		silent NERDTreeClose
-		silent TagbarClose
+	if (t:devpanel_state == 1)
+		if s:config.show_line_num
+			set nonumber
+		endif
+		let t:devpanel_state = 0
+		if s:config.use_nerdtree
+			silent NERDTreeClose
+		endif
+		if s:config.use_tagbar
+			silent TagbarClose
+		endif
 	endif
 endfunction
 
+" devpanel#DevPanelToggle() {{{1
 function! devpanel#DevPanelToggle() abort
-	if (!exists('t:dev_panel_open'))
-		let t:dev_panel_open = 0
+	if (!exists('t:devpanel_state'))
+		let t:devpanel_state = 0
 	endif
-	if (t:dev_panel_open == 1)
+	if (t:devpanel_state == 1)
 		silent call devpanel#DevPanelClose()
 	else
 		silent call devpanel#DevPanelOpen()
 	endif
 endfunction
 
+" devpanel#DevPanelSizeUpdate() {{{1
 function! devpanel#DevPanelSizeUpdate() abort
 	let g:tagbar_height = winheight(0) / 2
-	let g:NERDTreeWinSize = winwidth(0) > 150 ? 50 : winwidth(0) / 3
+	let g:NERDTreeWinSize = winwidth(0) > s:config.window_max ? s:config.window_min : winwidth(0) / 3
 	redraw!
 endfunction
+
+let s:config = {
+			\ 'use_nerdtree':	1,
+			\ 'use_tagbar':		1,
+			\ 'use_lightline':	1,
+			\ 'use_terminal':	0,
+			\ 'show_line_num':	1,
+			\ 'terminal_size':	10,
+			\ 'window_min':		50,
+			\ 'window_max':		150,
+\}
 
 let g:loaded_devpanel = 1
