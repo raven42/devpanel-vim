@@ -58,12 +58,7 @@ function! devpanel#DevPanelOpen() abort
 		call devpanel#DevPanelMarkWindow()
 		call devpanel#DevPanelSizeUpdate()
 		if s:config.use_nerdtree
-			if $GIT_ROOT != ""
-				silent NERDTree ${GIT_ROOT}/vobs/projects/springboard/fabos/
-				silent NERDTreeFind
-			else
-				silent NERDTree %
-			endif
+			silent NERDTree
 		endif
 		if s:config.use_tagbar
 			silent TagbarOpen
