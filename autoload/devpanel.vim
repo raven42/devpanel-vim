@@ -1,20 +1,20 @@
 " =============================================================================
-" file:			devpanel.vim
-" description:	manage an ide based window environment with other plugins
-" author:		david hegland <darth.gerbil@gmail.com>
-" license:		vim license
-" website:		https://github.com/raven42/devpanel-vim
-" version:		1.0
-" note:			this plugin uses nerdtree and tagbar
+" File:			devpanel.vim
+" Description:	manage an ide based window environment with other plugins
+" Author:		David Hegland <darth.gerbil@gmail.com>
+" License:		vim license
+" Website:		https://github.com/raven42/devpanel-vim
+" Version:		1.0
+" Note:			this plugin uses nerdtree and tagbar
 " =============================================================================
 
-" devpanel#DevPanelMarkWindow() {{{1
-function! devpanel#DevPanelMarkWindow() abort
+" s:DevPanelMarkWindow() {{{1
+function! s:DevPanelMarkWindow() abort
 	let w:devpanel_marked_window = 1
 endfunction
 
-" devpanel#DevPanelActivateMarkedWindow() {{{1
-function! devpanel#DevPanelActivateMarkedWindow(...)
+" s:DevPanelActivateMarkedWindow() {{{1
+function! s:DevPanelActivateMarkedWindow(...)
 	if a:0 == 1
 		let clear_flag = a:1
 	else
@@ -27,10 +27,10 @@ function! devpanel#DevPanelActivateMarkedWindow(...)
 			endif
 			execute window . 'wincmd w'
 			if exists('w:devpanel_marked_window')
-				if s:config.use_tagbar
+				if g:devpanel_use_tagbar
 					call tagbar#Update()
 				endif
-				if s:config.use_lightline
+				if g:devpanel_use_lightline
 					call lightline#update()
 				endif
 				break
@@ -42,9 +42,33 @@ function! devpanel#DevPanelActivateMarkedWindow(...)
 	endif
 endfunction
 
+" s:DevPanelSizeUpdate() {{{1
+function! s:DevPanelSizeUpdate() abort
+	let def_panel_width = winwidth(0) / 3
+	let def_panel_height = winheight(0) / 2
+	if g:devpanel_user_defined_size
+		return
+	endif
+	if g:devpanel_use_tagbar
+		let g:tagbar_height = def_panel_height
+		let g:tagbar_width =
+					\ def_panel_width > g:devpanel_panel_max ? g:devpanel_panel_max : 
+					\ def_panel_width < g:devpanel_panel_min ? g:devpanel_panel_min :
+					\ def_panel_width
+		let g:tagbar_position = 'bottom'
+		let g:tagbar_previewwin_pos = 'botright'
+	endif
+	if g:devpanel_use_nerdtree
+		let g:NERDTreeWinSize =
+					\ def_panel_width > g:devpanel_panel_max ? g:devpanel_panel_max : 
+					\ def_panel_width < g:devpanel_panel_min ? g:devpanel_panel_min :
+					\ def_panel_width
+	endif
+endfunction
+
 " devpanel#DevPanelOpen() {{{1
 function! devpanel#DevPanelOpen() abort
-	if winwidth(0) < 100
+	if winwidth(0) < g:devpanel_open_min_width && g:devpanel_auto_open == 1
 		return
 	endif
 	if (!exists('t:devpanel_state'))
@@ -52,18 +76,18 @@ function! devpanel#DevPanelOpen() abort
 	endif
 	if (t:devpanel_state == 0)
 		let t:devpanel_state = 1
-		if s:config.show_line_num
+		if g:devpanel_show_line_num
 			set number
 		endif
-		call devpanel#DevPanelMarkWindow()
-		call devpanel#DevPanelSizeUpdate()
-		if s:config.use_nerdtree
+		call s:DevPanelMarkWindow()
+		call s:DevPanelSizeUpdate()
+		if g:devpanel_use_nerdtree
 			silent NERDTree
 		endif
-		if s:config.use_tagbar
+		if g:devpanel_use_tagbar
 			silent TagbarOpen
 		endif
-		call devpanel#DevPanelActivateMarkedWindow(0)
+		call s:DevPanelActivateMarkedWindow(0)
 
 		" If we have flake8, and if this is a python file, run flake8
 		if &filetype ==# 'python'
@@ -71,13 +95,12 @@ function! devpanel#DevPanelOpen() abort
 			let w:flake8_window = 1
 		endif
 
-		if s:config.use_terminal
+		if g:devpanel_use_terminal
 			" Open terminal window
-			let cmd = 'terminal ++rows=' . s:config.terminal_size
-			echom 'running cmd=' . cmd
+			let cmd = 'terminal ++rows=' . g:devpanel_terminal_size
 			execute cmd
 		endif
-		call devpanel#DevPanelActivateMarkedWindow()
+		call s:DevPanelActivateMarkedWindow()
 		redraw!
 	endif
 endfunction
@@ -88,14 +111,14 @@ function! devpanel#DevPanelClose() abort
 		let t:devpanel_state = 0
 	endif
 	if (t:devpanel_state == 1)
-		if s:config.show_line_num
+		if g:devpanel_show_line_num
 			set nonumber
 		endif
 		let t:devpanel_state = 0
-		if s:config.use_nerdtree
+		if g:devpanel_use_nerdtree
 			silent NERDTreeClose
 		endif
-		if s:config.use_tagbar
+		if g:devpanel_use_tagbar
 			silent TagbarClose
 		endif
 	endif
@@ -113,22 +136,10 @@ function! devpanel#DevPanelToggle() abort
 	endif
 endfunction
 
-" devpanel#DevPanelSizeUpdate() {{{1
-function! devpanel#DevPanelSizeUpdate() abort
-	let g:tagbar_height = winheight(0) / 2
-	let g:NERDTreeWinSize = winwidth(0) > s:config.window_max ? s:config.window_min : winwidth(0) / 3
+" devpanel#DevPanelResize() {{{1
+function! devpanel#DevPanelResize() abort
+	call s:DevPanelSizeUpdate()
 	redraw!
 endfunction
-
-let s:config = {
-			\ 'use_nerdtree':	1,
-			\ 'use_tagbar':		1,
-			\ 'use_lightline':	1,
-			\ 'use_terminal':	0,
-			\ 'show_line_num':	1,
-			\ 'terminal_size':	10,
-			\ 'window_min':		50,
-			\ 'window_max':		150,
-\}
 
 let g:loaded_devpanel = 1

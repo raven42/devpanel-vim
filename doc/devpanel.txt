@@ -1,0 +1,448 @@
+devpanel.txt		Window manager using NERDTree and Tagbar plugins
+
+Author:				David Hegland <darth.gerbil@gmail.com>
+License:			Vim license
+Homepage:			https://github.com/raven42/devpanel-vim
+Version:			0.9
+
+=============================================================================
+Contents                                           *devpanel* *devpanel-contents*
+
+        1. Intro ................................ |devpanel-intro|
+        2. Requirements ......................... |devpanel-requirements|
+        3. Installation ......................... |devpanel-installation|
+        4. Usage ................................ |devpanel-usage|
+            Commands ............................ |devpanel-commands|
+            User Functions ...................... |devpanel-functions|
+            Plugin Integrations ................. |devpanel-integrations|
+            Recommended Plugins ................. |devpanel-recommendations|
+        5. Configuration ........................ |devpanel-configuration|
+        6. Troubleshooting & Known Issues ....... |devpanel-issues|
+        7. History .............................. |devpanel-history|
+        8. Credits .............................. |devpanel-credits|
+
+=============================================================================
+1. Intro                                                       *devpanel-intro*
+
+This plugin acts as a window manager for integrating the NERDTree and Tagbar
+plugins together into a more streamlined interface. Using the recommended
+configurations as listed in the |devpanel-integrations| section, the following
+look can be achieved. The basic layout using these recommended configurations
+will appear as the following:
+
+
+    +----------+--------------------+
+    | NERDTree | Edit Window        |
+    |          |                    |
+    |          |                    |
+    |          |                    |
+    |          |                    |
+    +----------+                    |
+    | Tagbar   |                    |
+    |          |                    |
+    |          |                    |
+    |          +--------------------+
+    |          | Preview/quickfix   |
+    |          |                    |
+    +----------+--------------------+
+
+=============================================================================
+2. Requirements                                         *devpanel-requirements*
+
+The following requirements are needed to use devpanel:
+
+    - Vim 8.0 or higher. It is possible this plugin could work with a lower
+    version, but it has not been tested and will not be supported.
+    - NERDTree Plugin Installed - unless disabling it.
+    - Tagbar Plugin Installed - unless disabling it.
+    - Flake8 Plugin Installed - unless disabling it.
+    - Lightline Plugin Installed - unless disabling it.
+    - Devpanel will not work in |restricted-mode| or with |compatible| set.
+
+=============================================================================
+3. Installation                                         *devpanel-installation*
+
+Use the normal Vim package installation method. The preferred method is to
+clone the git repository in the ~/.vim/pack/<plugin>/start directory.
+
+Run |:helptags| after installation to update the Vim help documentation.
+
+=============================================================================
+4. Usage                                                       *devpanel-usage*
+
+-----------------------------------------------------------------------------
+COMMANDS                                                    *devpanel-commands*
+
+DevPanelOpen~
+This command opens the devpanel.
+
+DevPanelClose~
+This command closes the devpanel if open.
+
+DevPanel~
+This command toggles the devpanel open or closed depending on the current
+state.
+
+-----------------------------------------------------------------------------
+USER FUNCTIONS                                             *devpanel-functions*
+
+devpanel#DevPanelOpen()~
+This is a user function to open the devpanel.
+
+devpanel#DevPanelClose()~
+This is a user function to close the devpanel if open.
+
+devpanel#DevPanelToggle()~
+This is a user function to toggle the devpanel open or closed depending on the
+current state.
+
+-----------------------------------------------------------------------------
+PLUGIN INTEGRATIONS                                     *devpanel-integrations*
+
+NERDTree~
+The NERDTree plugin is used to show the file / directory listing from the
+current directory. The default NERDTree configuration is suitable for the
+examples and screenshots on the devpanel website. This plugin does modify the
+following NERDTree configuration options to manage the panel size. If you have
+any of these configurations set in your .vimrc, then there may be issues with
+what values are used depending on load order. If you wish to specifically set
+your own values, use the |g:devpanel_user_defined_size| configuration to
+disable the devpanel setting of these variables.
+>
+    g:NERDTreeWinSize
+<
+
+Tagbar~
+The tagbar pluing is used to show the current tags defined in the file. This
+plugin sets the following tagbar configuration variables. If you have any of
+these configurations set in your .vimrc, then there may be issues with
+what values are used depending on load order. If you wish to specifically
+set your own values, use the |g:devpanel_user_defined_size| configuration to
+tell devpanel not to set these values.
+>
+    g:tagbar_position
+    g:tagbar_height
+    g:tagbar_previewwin_pos
+<
+
+If also integrating with lightline, then the following tagbar option is
+recommended.
+>
+    let g:tagbar_no_status_line = 1
+<
+
+Lighline~
+There is minimal integration with the Lightline plugin. The only main
+integration is a call to lightline#update() to forcefully update the lightline
+upon some window movement / creation commands. This is due to a few other
+plugins or VIM defaults may change the statusline and so an update to
+lightline is triggered to make sure everything is rendered properly.
+
+Flake8~
+The Flake8 plugin provides syntax checking for python scripts / programs. The
+recommmended flake8 configuration is as follows to use it as described in the
+examples and screenshots on the devpanel website.
+>
+    let g:flake8_show_quickfix = 1
+    let g:flake8_quickfix_height = 10
+    let g:flake8_always_visible = 1
+<
+
+-----------------------------------------------------------------------------
+RECOMMENDED PLUGINS                                  *devpanel-recommendations*
+
+While not actually integrated with devpanel, the following plugins are
+recommended and are used in the examples and screenshots seen.
+
+Lightline-Bufferline~
+The default Lightline-Bufferline configuration is fine.
+    https://github.com/mengelbrecht/lightline-bufferline
+
+GitGutter~
+The recommended GitGutter configurations is as follows.
+>
+    let g:gitgutter_preview_win_location = 'rightbelow'
+<
+    https://github.com/airblade/vim-gitgutter
+
+=============================================================================
+5. Configuration                                       *devpanel-configuration*
+
+                                                      *g:devpanel_use_nerdtree*
+g:devpanel_use_nerdtree~
+Default: 1
+
+Use this option to control the use of the NERDTree plugin panel.
+
+Possible values are:
+    0: Disable the NERDTree panel
+    1: Enable the NERDTree panel
+
+Example:
+>
+    let g:devpanel_use_nerdtree = 1
+<
+
+                                                        *g:devpanel_use_tagbar*
+g:devpanel_use_tagbar~
+Default: 1
+
+Use this option to control the use of the Tagbar plugin panel. Window
+positioning follows the Tagbar configuration.
+
+Possible values are:
+    0: Disable the Tagbar panel
+    1: Enable the Tagbar panel
+
+Example:
+>
+    let g:devpanel_use_tagbar = 1
+<
+
+                                                        *g:devpanel_use_flake8*
+g:devpanel_use_flake8~
+Default: 1
+
+Use this option to control the use of the Flake8 plugin panel. This plugin
+is used only for python filetypes. This enables the Flake8 python syntax
+checking. Window positioning follows the Flake8 configuration.
+
+Possible values are:
+    0: Disable the Flake8 panel
+    1: Enable the Flake8 panel
+
+Example:
+>
+    let g:devpanel_use_flake8 = 1
+<
+
+                                                     *g:devpanel_use_lightline*
+g:devpanel_use_lightline~
+Default: 1
+
+Use this option to control the use of the lightline plugin. This plugin
+integration is done to call lightline#update() to correct some things on
+the status line which can sometimes be modied when issueing the wincmd to
+switch between windows upon window activation.
+
+Possible values are:
+    0: Disable the Lightline integration
+    1: Enable the Lightline integration
+
+Example:
+>
+    let g:devpanel_use_lightline = 1
+<
+
+                                                      *g:devpanel_use_terminal*
+g:devpanel_use_terminal~
+Default: 0
+
+Use this option to control the use of the |terminal| panel. This is the
+default VIM terminal and operates using the normal terminal behavior.
+
+By default it is currently disabled as there is some odd behavior when
+switching between the terminal window and other windows.
+
+Possible values are:
+    0: Disable the terminal panel
+    1: Enable the terminal panel
+
+Example:
+>
+    let g:devpanel_use_terminal = 1
+<
+
+                                                     *g:devpanel_show_line_num*
+g:devpanel_show_line_num~
+Default: 1
+
+This option will control the visibility of line numbers in the main edit
+window when automatically opening the devpanel. If the devpanel is auto-opened
+and the window size is greater than |g:devpanel_open_min_width|, then this
+will be used to determine if the main edit window should issue a 'set number'
+command.
+
+Possible values are:
+    0: Disable use of line numbers on the main edit window
+    1: Enable use of line numbers on the main edit window
+
+Example:
+>
+    let g:devpanel_show_line_num = 1
+<
+
+                                                         *g:devpanel_auto_open*
+g:devpanel_auto_open~
+Default: 1
+
+Use this option to determine if the devpanel should automatically open on the
+|VimEnter| event. If enabled, then the |g:devpanel_open_min_width| will be
+checked to see if the devpanel window should be automatically opened or not.
+
+Possible values are:
+    0: Disable automatic opening of the devpanel
+    1: Enable automatic opening of the devpanel
+
+Example:
+>
+    let g:devpanel_auto_open = 1
+<
+
+
+                                                   *g:devpanel_auto_open_files*
+g:devpanel_auto_open_files~
+Default: '*.c,*.cpp,*.h,*.py'
+
+Use this option to set which files to use to automatically open devpanel. This
+option is used to set a Vim autocmd to trigger on the VimEnter event to
+determine what files to open the devpanel on.
+
+Possible values are:
+    '<files>': Any file identifier as used by |autocmd|.
+
+Example:
+>
+    let g:devpanel_auto_filetypes = '*'
+<
+
+                                                    *g:devpanel_open_min_width*
+g:devpanel_open_min_width~
+Default: 100
+
+Use this option to control when to automatically open the devpanel. For narrow
+windows, this can be used so the devpanel does not automatically open, but it
+will for larger windows. This is only used when the |g:devpanel_auto_open|
+option is enabled.
+
+Possible values are:
+    <#>: Any valid window width in characters.
+
+Example:
+>
+    let g:devpanel_open_min_width = 100
+<
+
+                                                     *g:devpanel_terminal_size*
+g:devpanel_terminal_size~
+Default: 10
+
+When the |g:devpanel_use_terminal| option is enabled, this is used to
+determine the window height of the terminal window.
+
+Possible values are:
+    <#>: Any valid window height in characters.
+
+Example:
+>
+    let g:devpanel_terminal_size = 1
+<
+
+
+                                                         *g:devpanel_panel_min*
+g:devpanel_panel_min~
+Default: 40
+
+This option is used to set the minimum width of the panels. It is used to
+calculate the width of the panels relative to the window width. By default the
+panel width will be 1/3 of the total window width. However if that value is
+less than the |g:devpanel_panel_min|, then the value of this setting is used
+instead.
+
+Possible values are:
+    <#>: Any valid number of characters.
+
+Example:
+>
+    let g:devpanel_panel_min = 40
+<
+
+
+                                                         *g:devpanel_panel_max*
+g:devpanel_panel_max~
+Default: 80
+
+This option is used to set the maximum width of the panels. It is used to
+calculate the width of the panels relative to the window width. By default the
+panel width will be 1/3 of the total window width. However if that value is
+greater than the |g:devpanel_panel_max|, then the value of this setting is used
+instead.
+
+Possible values are:
+    <#>: Any valid number of characters.
+
+Example:
+>
+    let g:devpanel_panel_max = 80
+<
+
+
+                                                 *g:devpanel_user_defined_size*
+g:devpanel_user_defined_size~
+Default: 0
+
+This option is used to specify if the users .vimrc file will define the values
+for nerdtree and tagbar panels. If this option is set, then devpanel will not
+set, nor update the following variables.
+>
+    g:tagbar_height
+    g:tagbar_width
+    g:tagbar_position
+    g:tagbar_previewwin_pos
+    g:NERDTreeWinSize
+
+Possible values are:
+    0: Use the devpanel defined size for the panel windows
+    1: Disable the devpanel defined sizes and use your own settings
+
+Example:
+>
+    let g:devpanel_user_defined_size = 0
+<
+
+=============================================================================
+6. Troubleshooting & Known issues                             *devpanel-issues*
+
+Issue - Terminal character encoding~
+If using the terminal window, and leaving it in terminal mode, there is an
+issue with switching between windows and coming back to the terminal window
+and having odd characters show up on the screen (at least for xterm terminal
+emulators). There is an escape sequence being sent by xterm as <ESC>[2q or
+similar DECLL escape sequences. At this time I am not sure how to intercept
+these to ignore them.
+
+Issue - Tagbar Window toggling position~
+If manually opening / closing the Tagbar panel, the position opens relative to
+the current window, not relative to the NERDTree window as it does on initial
+opening of the devpanel. This can be corrected by closing the Tagbar panel,
+and then reopening it while the NERDTree panel is active.
+
+Issue - Window Resizing~
+If the Vim terminal window is resized, the devpanel is not updated fully. The
+internal variables are modified, but the windows to not redraw themselves. If
+you toggle the devpanel, then the new window sizes will be used.
+
+=============================================================================
+7. History                                                   *devpanel-history*
+
+0.9 (2020-08-20)
+    - Initial Beta release
+    - Added main documentation pages
+    - Finalized some of the user configuration variables
+
+0.5 (2020-08-20)
+    - Initial Alpha release
+
+=============================================================================
+8. Credits                                                   *devpanel-credits*
+
+DevPanel was written by David Hegland and is released under the Vim license.
+See |license| for details. This plugin makes use of the following plugins:
+
+    NERDTree by Martin Grenfell https://github.com/preservim/nerdtree
+    Tagbar by Jan Larres        https://github.com/majutsushi/tagbar
+    Flake8 by Vincent Driessen  https://github.com/nvie/vim-flake8
+    Lightline by itchyny        https://github.com/itchyny/lightline.vim
+
+=============================================================================
+ vim: tw=78 ts=4 sw=4 sts=4 et ft=help
