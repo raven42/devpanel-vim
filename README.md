@@ -4,7 +4,7 @@ This plugin acts as a window manager for integrating the NERDTree and Tagbar plu
 the recommended configurations as listed in the devpanel-integrations section, the following look can be achieved. The basic layout
 using these recommended configurations will appear as the following:
 
-![DevPanelExample](../img/devpanel.png "DevPanel Example")
+![DevPanelExample](https://user-images.githubusercontent.com/3730811/90819921-3e1ad700-e2f6-11ea-93ac-849fc6717dd4.png "DevPanel Example")
 
 ## Installation
 Vim Packages
