@@ -12,6 +12,29 @@ Vim Packages
 git clone https://github.com/raven42/devpanel-vim ~/.vim/pack/plugins/start/devpanel-vim
 ```
 
+## Requirements
+This plugin integrates with the following plugins. These must be installed in order to fully use them.
+
+### [NERDTree](https://github.com/preservim/nerdtree)
+NERDTree is used as a file browser on the upper left panel.
+
+### [Tagbar](https://github.com/majutsushi/tagbar)
+Tagbar is used as a tag browser in the lower left panel.
+
+### [Lightline](https://github.com/itchyny/lightline.vim)
+There is a small integration point with lightline to forceably trigger an update upon window creation / movement.
+
+### [Flake8](https://github.com/nvie/vim-flake8)
+Flake8 is used as a python syntax checker panel.
+
+> :warning: If you do not wish to use any of these plugins, set one or more of these options
+> ```
+> let g:devpanel_use_nerdtree = 0
+> let g:devpanel_use_tagbar = 0
+> let g:devpanel_use_lightline = 0
+> let g:devpanel_use_flake8 = 0
+> ```
+
 ## Usage
 By default, devpanel is set to auto-open on specific file types. This can be controlled with the following setting:
 ```
