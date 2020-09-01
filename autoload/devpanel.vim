@@ -55,7 +55,7 @@ function! s:DevPanelSizeUpdate() abort
 					\ def_panel_width > g:devpanel_panel_max ? g:devpanel_panel_max : 
 					\ def_panel_width < g:devpanel_panel_min ? g:devpanel_panel_min :
 					\ def_panel_width
-		let g:tagbar_position = 'bottom'
+		let g:tagbar_position = 'rightbelow'
 		let g:tagbar_previewwin_pos = 'botright'
 	endif
 	if g:devpanel_use_nerdtree
