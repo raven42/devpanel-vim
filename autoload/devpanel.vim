@@ -5,7 +5,7 @@
 " License:		vim license
 " Website:		https://github.com/raven42/devpanel-vim
 " Version:		1.0
-" Note:			this plugin uses nerdtree and tagbar
+" Note:			This plugin uses nerdtree and tagbar
 " =============================================================================
 
 " s:DevPanelMarkWindow() {{{1
