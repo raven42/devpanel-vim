@@ -18,7 +18,7 @@ This plugin integrates with the following plugins. These must be installed in or
 ### [NERDTree](https://github.com/preservim/nerdtree)
 NERDTree is used as a file browser on the upper left panel.
 
-### [Tagbar](https://github.com/majutsushi/tagbar)
+### [Tagbar](https://github.com/preservim/tagbar)
 Tagbar is used as a tag browser in the lower left panel.
 
 ### [Lightline](https://github.com/itchyny/lightline.vim)
