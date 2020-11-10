@@ -55,8 +55,13 @@ function! s:DevPanelSizeUpdate() abort
 					\ def_panel_width > g:devpanel_panel_max ? g:devpanel_panel_max : 
 					\ def_panel_width < g:devpanel_panel_min ? g:devpanel_panel_min :
 					\ def_panel_width
-		let g:tagbar_position = 'rightbelow'
-		let g:tagbar_previewwin_pos = 'botright'
+		if g:devpanel_use_nerdtree
+			let g:tagbar_position = 'rightbelow'
+			let g:tagbar_previewwin_pos = 'botright'
+		else
+			let g:tagbar_position = 'topleft vertical'
+			let g:tagbar_previewwin_pos = 'botright'
+		endif
 	endif
 	if g:devpanel_use_nerdtree
 		let g:NERDTreeWinSize =
@@ -87,10 +92,17 @@ function! devpanel#DevPanelOpen() abort
 		if g:devpanel_use_tagbar
 			silent TagbarOpen
 		endif
+		if g:devpanel_use_minimap
+			silent Minimap
+		endif
 		call s:DevPanelActivateMarkedWindow(0)
 
+		if g:devpanel_use_minimap
+			MinimapRefresh
+		endif
+
 		" If we have flake8, and if this is a python file, run flake8
-		if &filetype ==# 'python'
+		if &filetype ==# 'python' && g:devpanel_use_flake8
 			call flake8#Flake8()
 			let w:flake8_window = 1
 		endif
@@ -120,6 +132,9 @@ function! devpanel#DevPanelClose() abort
 		endif
 		if g:devpanel_use_tagbar
 			silent TagbarClose
+		endif
+		if g:devpanel_use_minimap
+			silent MinimapClose
 		endif
 	endif
 endfunction

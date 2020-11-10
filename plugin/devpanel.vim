@@ -34,6 +34,7 @@ function! s:setup_options() abort
 				\ 'use_terminal'		: 0,
 				\ 'use_flake8'			: 1,
 				\ 'use_nerdtree'		: 1,
+				\ 'use_minimap'			: 0,
 				\ 'use_tagbar'			: 1,
 				\ 'show_line_num'		: 1,
 				\ 'auto_open'			: 1,

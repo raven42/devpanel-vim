@@ -27,12 +27,16 @@ There is a small integration point with lightline to forceably trigger an update
 ### [Flake8](https://github.com/nvie/vim-flake8)
 Flake8 is used as a python syntax checker panel.
 
+### [Minimap](https://github.com/wfxr/minimap.vim)
+Minimap is a plugin to render a preview of the file in a split window. This plugin also requires installation of the [code-minimap](https://github.com/wfxr/code-minimap) program.
+
 > :warning: If you do not wish to use any of these plugins, set one or more of these options
 > ```
 > let g:devpanel_use_nerdtree = 0
 > let g:devpanel_use_tagbar = 0
 > let g:devpanel_use_lightline = 0
 > let g:devpanel_use_flake8 = 0
+> let g:devpanel_use_minimap = 0
 > ```
 
 ## Usage
