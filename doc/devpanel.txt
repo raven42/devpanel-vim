@@ -142,6 +142,9 @@ Flake8~
 The Flake8 plugin provides syntax checking for python scripts / programs. The
 recommmended flake8 configuration is as follows to use it as described in the
 examples and screenshots on the devpanel website.
+
+Note: If flake8 is not installed, then the flake8 window will not open and no
+warning will be visable.
 >
     let g:flake8_show_quickfix = 1
     let g:flake8_quickfix_height = 10

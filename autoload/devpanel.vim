@@ -103,8 +103,12 @@ function! devpanel#DevPanelOpen() abort
 
 		" If we have flake8, and if this is a python file, run flake8
 		if &filetype ==# 'python' && g:devpanel_use_flake8
-			call flake8#Flake8()
-			let w:flake8_window = 1
+			" Check for flake8 executable
+			let flake8_exe = exists('g:flake8_cmd') ? split(g:flake8_cmd)[0] : 'flake8'
+			if executable(flake8_exe)
+				call flake8#Flake8()
+				let w:flake8_window = 1
+			endif
 		endif
 
 		if g:devpanel_use_terminal
